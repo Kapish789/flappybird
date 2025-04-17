@@ -2,52 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Flappy Bird 2025</title>
+    <title>Flappy Bird Ultra 2025</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Google Fonts for modern look -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Montserrat:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
-            background: linear-gradient(135deg, #0f2027, #2c5364 100%);
             min-height: 100vh;
-            font-family: 'Montserrat', Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
+            font-family: 'Orbitron', 'Montserrat', Arial, sans-serif;
+            background: #0a0c1b url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1500&q=80') no-repeat center center fixed;
+            background-size: cover;
+            overflow-x: hidden;
+        }
+        .bg-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(120deg, #0a0c1b 60%, #1b233aee 100%);
+            z-index: 0;
+            pointer-events: none;
         }
         h1 {
             color: #fff;
             margin-top: 32px;
-            font-size: 2.5rem;
+            font-size: 2.7rem;
             letter-spacing: 2px;
-            text-shadow: 0 4px 24px #0008;
+            text-shadow: 0 8px 32px #000a, 0 1px 0 #fff3;
+            font-weight: 900;
+            text-align: center;
+            background: linear-gradient(90deg, #00ffe7 0%, #0a84ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 12px #00ffe7aa);
         }
         #gameContainer {
-            margin-top: 24px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 32px;
-            box-shadow: 0 8px 32px #0006;
-            padding: 32px 24px 24px 24px;
+            margin: 36px auto 0 auto;
+            background: rgba(20,24,40,0.82);
+            border-radius: 36px;
+            box-shadow: 0 12px 48px #00ffe733, 0 1.5px 8px #fff8, 0 0 0 2px #0a84ff55;
+            padding: 36px 28px 28px 28px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(16px) brightness(1.08);
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
         }
-        canvas {
-            border-radius: 24px;
-            background: linear-gradient(180deg, #a8edea 0%, #fed6e3 100%);
-            box-shadow: 0 4px 24px #0004;
+        canvas#gameCanvas {
+            border-radius: 28px;
+            background: rgba(10,12,27,0.92);
+            box-shadow: 0 8px 32px #0a84ff33, 0 0 0 2px #00ffe7cc;
             display: block;
+            margin-bottom: 8px;
+            width: 100%;
+            height: auto;
+            max-width: 540px;
+            max-height: 800px;
         }
         .glass {
-            background: rgba(255,255,255,0.18);
-            border-radius: 16px;
-            box-shadow: 0 4px 24px #0002;
-            padding: 16px 24px;
-            margin: 16px 0;
-            backdrop-filter: blur(6px);
+            background: rgba(30,40,60,0.82);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px #0a84ff22;
+            padding: 18px 28px;
+            margin: 18px 0;
+            backdrop-filter: blur(10px) brightness(1.1);
+            border: 1.5px solid #00ffe7aa;
         }
         #startScreen, #gameOverScreen {
             display: flex;
@@ -57,41 +77,47 @@
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             z-index: 10;
-            background: rgba(30,40,60,0.72);
-            border-radius: 24px;
+            background: rgba(10,12,27,0.92);
+            border-radius: 28px;
             color: #fff;
             font-size: 1.2rem;
             font-weight: 700;
             text-align: center;
+            box-shadow: 0 8px 32px #0a84ff44;
+            border: 2px solid #00ffe7cc;
         }
         #startScreen input, #startScreen select {
-            margin: 12px 0;
-            padding: 10px 18px;
-            border-radius: 8px;
-            border: none;
+            margin: 14px 0;
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 1.5px solid #0a84ffcc;
             font-size: 1.1rem;
             font-family: inherit;
-            background: rgba(255,255,255,0.8);
+            background: rgba(20,24,40,0.92);
+            color: #00ffe7;
             outline: none;
-            transition: box-shadow 0.2s;
+            transition: box-shadow 0.2s, border 0.2s;
         }
         #startBtn, #restartBtn {
-            margin-top: 18px;
-            padding: 12px 32px;
-            border-radius: 10px;
+            margin-top: 20px;
+            padding: 14px 36px;
+            border-radius: 12px;
             border: none;
-            background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
-            color: #fff;
+            background: linear-gradient(90deg, #00ffe7 0%, #0a84ff 100%);
+            color: #181c2f;
             font-size: 1.2rem;
             font-weight: 900;
             letter-spacing: 1px;
             cursor: pointer;
-            box-shadow: 0 2px 12px #0003;
-            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 2px 12px #00ffe733, 0 0 0 2px #0a84ff99;
+            transition: background 0.2s, transform 0.1s, color 0.2s;
+            text-shadow: 0 1px 0 #fff8;
         }
         #startBtn:hover, #restartBtn:hover {
-            background: linear-gradient(90deg, #185a9d 0%, #43cea2 100%);
-            transform: scale(1.04);
+            background: linear-gradient(90deg, #0a84ff 0%, #00ffe7 100%);
+            color: #fff;
+            transform: scale(1.05);
+            box-shadow: 0 0 16px #00ffe7cc;
         }
         #hud {
             display: flex;
@@ -99,36 +125,44 @@
             width: 100%;
             margin: 12px 0 0 0;
             font-size: 1.1rem;
-            color: #222;
+            color: #00ffe7;
             font-weight: 700;
-            text-shadow: 0 2px 8px #fff8;
+            text-shadow: 0 2px 8px #0a84ff88;
         }
         #score, #timer, #playerName {
             margin: 0 18px;
         }
-        @media (max-width: 600px) {
+        @media (max-width: 700px) {
             #gameContainer {
                 padding: 8px 2px 2px 2px;
+                max-width: 99vw;
             }
-            canvas {
-                width: 95vw !important;
-                height: 60vw !important;
+            canvas#gameCanvas {
+                width: 98vw !important;
+                height: 70vw !important;
+                max-width: 99vw;
+                max-height: 90vh;
             }
+        }
+        .neon-border {
+            border: 2px solid #00ffe7cc;
+            box-shadow: 0 0 16px #00ffe7cc, 0 0 32px #0a84ff88;
         }
     </style>
 </head>
 <body>
-    <h1>Flappy Bird 2025</h1>
-    <div id="gameContainer">
+    <div class="bg-overlay"></div>
+    <h1>Flappy Bird Ultra 2025</h1>
+    <div id="gameContainer" class="neon-border">
         <div id="hud">
             <span id="playerName"></span>
             <span id="score">Score: 0</span>
             <span id="timer">Time: 0.0s</span>
         </div>
-        <canvas id="gameCanvas" width="420" height="600"></canvas>
+        <canvas id="gameCanvas" width="540" height="800"></canvas>
         <!-- Start Screen -->
         <div id="startScreen" class="glass">
-            <div style="font-size:1.5rem;margin-bottom:12px;">Welcome to Flappy Bird 2025!</div>
+            <div style="font-size:1.5rem;margin-bottom:12px;letter-spacing:1px;">Welcome to <span style="color:#00ffe7;">Flappy Bird Ultra</span>!</div>
             <input id="nameInput" type="text" maxlength="16" placeholder="Enter your name..." autocomplete="off" />
             <select id="difficultySelect">
                 <option value="easy">Easy 🟢</option>
@@ -136,29 +170,33 @@
                 <option value="hard">Hard 🔴</option>
             </select>
             <button id="startBtn">Start Game</button>
-            <div style="margin-top:10px;font-size:1rem;color:#eee;">Press <b>Space</b> or tap to flap!</div>
+            <div style="margin-top:10px;font-size:1rem;color:#00ffe7;">Press <b>Space</b> or tap to flap!</div>
         </div>
         <!-- Game Over Screen -->
         <div id="gameOverScreen" class="glass" style="display:none;">
-            <div id="gameOverMsg" style="font-size:1.5rem;margin-bottom:10px;"></div>
+            <div id="gameOverMsg" style="font-size:1.5rem;margin-bottom:10px;color:#00ffe7;"></div>
             <div id="finalScore" style="font-size:1.2rem;margin-bottom:10px;"></div>
             <div id="finalTime" style="font-size:1.1rem;margin-bottom:18px;"></div>
             <button id="restartBtn">Play Again</button>
         </div>
     </div>
+    <div style="text-align:center;margin:24px 0 16px 0;font-size:1.1rem;color:#00ffe7;font-weight:700;opacity:0.85;letter-spacing:1px;text-shadow:0 0 8px #0a84ff;">
+        Created by: Kapisch
+    </div>
+    <!-- Flappy Bird Game Script -->
     <script>
         // --- Game Constants ---
         const DIFFICULTY = {
-            easy:   { gravity: 0.32, flap: -6.5, gap: 170, speed: 2.2, freq: 110 },
-            medium: { gravity: 0.38, flap: -7.2, gap: 140, speed: 2.9, freq: 90 },
-            hard:   { gravity: 0.44, flap: -8.2, gap: 110, speed: 3.7, freq: 70 }
+            easy:   { gravity: 0.18, flap: -8.5, gap: 340, speed: 1.5, freq: 120 },
+            medium: { gravity: 0.28, flap: -8.2, gap: 260, speed: 2.7, freq: 90 },
+            hard:   { gravity: 0.38, flap: -8.2, gap: 200, speed: 3.7, freq: 70 }
         };
-        const BIRD_RADIUS = 22;
-        const PILLAR_WIDTH = 62;
-        const PILLAR_COLOR = "#2dce98";
-        const PILLAR_EDGE = "#185a9d";
-        const BIRD_COLOR = "#ffb347";
-        const BIRD_STROKE = "#ff7f50";
+        const BIRD_RADIUS = 28;
+        const PILLAR_WIDTH = 80;
+        const PILLAR_COLOR = "rgba(0,255,231,0.22)";
+        const PILLAR_EDGE = "#0a84ff";
+        const BIRD_COLOR = "rgba(10,132,255,0.92)";
+        const BIRD_STROKE = "#00ffe7";
         const FPS = 60;
 
         // --- DOM Elements ---
@@ -182,12 +220,12 @@
         let playerName = '';
         let difficulty = 'medium';
         let settings = DIFFICULTY[difficulty];
-        let bird, pillars, score, timer, startTime, animationId;
+        let bird, pillars, score, timer, startTime, animationId, frameCount;
 
         // --- Responsive Canvas ---
         function resizeCanvas() {
-            let w = Math.min(window.innerWidth * 0.95, 420);
-            let h = Math.max(Math.min(window.innerHeight * 0.7, 600), 350);
+            let w = Math.min(window.innerWidth * 0.98, 540);
+            let h = Math.max(Math.min(window.innerHeight * 0.85, 800), 420);
             canvas.width = w;
             canvas.height = h;
         }
@@ -207,6 +245,7 @@
             score = 0;
             timer = 0;
             startTime = null;
+            frameCount = 0;
             scoreSpan.textContent = "Score: 0";
             timerSpan.textContent = "Time: 0.0s";
         }
@@ -241,8 +280,8 @@
 
         function addPillar() {
             // Randomize gap position
-            const minGapY = 60;
-            const maxGapY = canvas.height - settings.gap - 60;
+            const minGapY = 80;
+            const maxGapY = canvas.height - settings.gap - 80;
             const gapY = Math.random() * (maxGapY - minGapY) + minGapY;
             pillars.push({
                 x: canvas.width + 10,
@@ -269,7 +308,7 @@
             }
 
             // Pillar logic
-            if (animationId % settings.freq === 0) addPillar();
+            if (frameCount % settings.freq === 0) addPillar();
             for (let p of pillars) {
                 p.x -= settings.speed;
             }
@@ -298,38 +337,68 @@
         }
 
         function drawGame() {
-            // Background
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // Sky gradient
+            // Metallic gradient background for canvas
             let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            grad.addColorStop(0, "#a8edea");
-            grad.addColorStop(1, "#fed6e3");
+            grad.addColorStop(0, "#232a3b");
+            grad.addColorStop(0.5, "#0a0c1b");
+            grad.addColorStop(1, "#232a3b");
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Pillars
-            for (let p of pillars) {
-                // Top
-                ctx.fillStyle = PILLAR_COLOR;
-                ctx.strokeStyle = PILLAR_EDGE;
-                ctx.lineWidth = 4;
+            // Futuristic neon light rays
+            for (let i = 0; i < 2; i++) {
+                ctx.save();
+                ctx.globalAlpha = 0.10;
                 ctx.beginPath();
-                ctx.rect(p.x, p.top.y, PILLAR_WIDTH, p.top.height);
+                ctx.ellipse(
+                    canvas.width / 2 + Math.sin(Date.now() / 2000 + i) * 80,
+                    canvas.height / 2 + Math.cos(Date.now() / 3000 + i) * 120,
+                    220 + i * 40, 60 + i * 20, Math.PI / 6, 0, Math.PI * 2
+                );
+                ctx.fillStyle = "#00ffe7";
+                ctx.shadowColor = "#0a84ff";
+                ctx.shadowBlur = 32;
                 ctx.fill();
-                ctx.stroke();
-                // Bottom
-                ctx.beginPath();
-                ctx.rect(p.x, p.bottom.y, PILLAR_WIDTH, p.bottom.height);
-                ctx.fill();
-                ctx.stroke();
+                ctx.restore();
             }
 
-            // Bird (with shadow)
+            // Pillars (pipes) with metallic neon effect
+            for (let p of pillars) {
+                // Top
+                ctx.save();
+                ctx.shadowColor = "#00ffe7";
+                ctx.shadowBlur = 18;
+                ctx.fillStyle = PILLAR_COLOR;
+                ctx.strokeStyle = PILLAR_EDGE;
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.roundRect(p.x, p.top.y, PILLAR_WIDTH, p.top.height, 18);
+                ctx.fill();
+                ctx.stroke();
+                ctx.restore();
+
+                // Bottom
+                ctx.save();
+                ctx.shadowColor = "#00ffe7";
+                ctx.shadowBlur = 18;
+                ctx.fillStyle = PILLAR_COLOR;
+                ctx.strokeStyle = PILLAR_EDGE;
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.roundRect(p.x, p.bottom.y, PILLAR_WIDTH, p.bottom.height, 18);
+                ctx.fill();
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // Bird (with shadow and neon highlight)
             ctx.save();
-            ctx.globalAlpha = 0.18;
+            ctx.globalAlpha = 0.22;
             ctx.beginPath();
-            ctx.arc(bird.x + 8, bird.y + 18, bird.radius * 0.95, 0, Math.PI * 2);
-            ctx.fillStyle = "#444";
+            ctx.arc(bird.x + 10, bird.y + 22, bird.radius * 0.98, 0, Math.PI * 2);
+            ctx.fillStyle = "#0a84ff";
+            ctx.shadowColor = "#00ffe7";
+            ctx.shadowBlur = 24;
             ctx.fill();
             ctx.restore();
 
@@ -338,16 +407,30 @@
             ctx.beginPath();
             ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
             ctx.fillStyle = BIRD_COLOR;
-            ctx.shadowColor = "#ffecb3";
-            ctx.shadowBlur = 16;
+            ctx.shadowColor = "#00ffe7";
+            ctx.shadowBlur = 18;
             ctx.fill();
-            ctx.lineWidth = 4;
+            ctx.lineWidth = 5;
             ctx.strokeStyle = BIRD_STROKE;
             ctx.stroke();
+
+            // Neon highlight
+            ctx.save();
+            ctx.globalAlpha = 0.22;
+            ctx.beginPath();
+            ctx.arc(bird.x - 6, bird.y - 8, bird.radius * 0.7, Math.PI * 1.2, Math.PI * 1.8);
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = "#00ffe7";
+            ctx.shadowColor = "#0a84ff";
+            ctx.shadowBlur = 12;
+            ctx.stroke();
+            ctx.restore();
+
             // Eye
             ctx.beginPath();
             ctx.arc(bird.x + bird.radius * 0.38, bird.y - bird.radius * 0.18, bird.radius * 0.22, 0, Math.PI * 2);
             ctx.fillStyle = "#fff";
+            ctx.shadowBlur = 0;
             ctx.fill();
             ctx.beginPath();
             ctx.arc(bird.x + bird.radius * 0.48, bird.y - bird.radius * 0.18, bird.radius * 0.09, 0, Math.PI * 2);
@@ -366,6 +449,7 @@
             updateGame(dt);
             drawGame();
 
+            frameCount++;
             if (!bird.alive) {
                 endGame();
                 return;
@@ -377,7 +461,7 @@
         startBtn.onclick = () => {
             if (!nameInput.value.trim()) {
                 nameInput.focus();
-                nameInput.style.boxShadow = "0 0 0 2px #ff7f50";
+                nameInput.style.boxShadow = "0 0 0 2px #00ffe7";
                 setTimeout(() => nameInput.style.boxShadow = "", 800);
                 return;
             }
